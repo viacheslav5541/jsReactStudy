@@ -1,24 +1,17 @@
-
 const proxynator = (target) => {
     return new Proxy(target, {
-        set(target, props, value) {
-            console.log('set', target, props, value)
-            target[props] = value;
-        },
         get(target, props, value) {
-            console.log('get', target, props, value)
-            console.log(target[props])
             if (props === 'toJSON') return () => target
-            if (!target[props]) {
-                objecor = Object.defineProperty(target, props, { enumerable: true, configurable: true, writable: true })
-                target[props] = {}
-                return proxynator(target[props])
-            } else return value
+            objecor = Object.defineProperty(target, props, { enumerable: true, configurable: true, writable: true })
+            target[props] = {...Reflect.get(...arguments)}
+            return proxynator(Reflect.get(...arguments))
         }
     })
 }
 
 
 keksoValue = proxynator({ x: 10 })
-keksoValue.a.c = 2
+keksoValue.x.b.a= 2
+keksoValue.x.d.r =2
+keksoValue.x.d = 5
 console.log(JSON.stringify(keksoValue))
