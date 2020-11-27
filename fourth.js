@@ -1,13 +1,14 @@
-import React from "react";
+import React, {Profiler} from "react";
 
-
-const SimpleComponent = React.memo(({ data,componentRerenderedTimes }) => {
+const SimpleComponent = React.memo(({ number, componentRerenderedTimes }) => {
     componentRerenderedTimes.current+=1;
 
-    const onPress = (item) => alert(item.number);
+    const onPress = () => alert(number);
 
-    return data.map((item,index)=><div key = {index} onClick={onPress.bind(this,item)}>Number: {item.number}</div>);
+    return <div onClick={onPress}>Number: {number}</div>;
 });
+
+
 
 export default function App() {
     const componentRerenderedTimes = React.useRef(0);
@@ -23,6 +24,7 @@ export default function App() {
         );
 
     return (
+        <Profiler id ='photo'>
         <div>
             <div>Was rendered: {componentRerenderedTimes.current}</div>
             <button onClick={random}>random</button>
@@ -33,7 +35,15 @@ export default function App() {
             >
                 add to top
             </button>
-            <SimpleComponent data = {data}  componentRerenderedTimes={componentRerenderedTimes}/>
+            {data.map((item) => (
+                <SimpleComponent
+                    key = {item.id}
+                    number={item.number}
+                    componentRerenderedTimes={componentRerenderedTimes}
+                />
+            ))}
         </div>
+        </Profiler>
     );
 }
+
